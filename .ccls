@@ -5,6 +5,7 @@ clang
 
 -I/home/psuwala/Projects/ksi/include
 -I/home/psuwala/Projects/ksi/src
+-I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/ESPPerfectTime/src
 -I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/Button/src
 -I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/ESP8266RestClient
 -I/home/psuwala/.platformio/packages/framework-arduinoespressif8266@3.20704.0/libraries/ESP8266WiFi/src
