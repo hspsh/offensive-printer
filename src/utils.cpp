@@ -33,12 +33,3 @@ char *expirationDate(unsigned int daysToAdd) {
 }
 
 void updateTime() { pftime::configTime(TZ_Europe_Warsaw, "0.pl.pool.ntp.org"); }
-
-void Subject::produce() { times++; }
-
-void Subject::consume(const std::function<void()> &callback) {
-  if (times > 0) {
-    callback();
-    times--;
-  }
-}

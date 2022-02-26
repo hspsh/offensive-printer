@@ -16,33 +16,33 @@ Button print14DaysButton(14, INPUT);
 Button printOwnerButton(13, INPUT);
 Button printStealerButton(12, INPUT);
 
+Subject<10> tasks;
 
-Subject print14Days;
-Subject printOwner;
-Subject printStealer;
+std::function<void()> printExpirationDate = []() {
+  updateTime();
+  client.post("/print/53", createQueryString("EXP", expirationDate(14)));
+};
+
+std::function<void()> printOwnerSticker = []() {
+  client.post("/print/62", createPrintOnlyQueryString());
+};
+
+std::function<void()> printStealerSticker = []() {
+  client.post("/print/63", createPrintOnlyQueryString());
+};
 
 void setup() {
   Serial.begin(9600);
   client.begin("eduram", "zarazcipodam");
+  updateTime();
 
-  print14DaysButton.onPress([]() { print14Days.produce(); });
-  printOwnerButton.onPress([]() { printOwner.produce(); });
-  printStealerButton.onPress([]() { printStealer.produce(); });
+  print14DaysButton.onPress([]() { tasks.enqueue(&printExpirationDate); });
+  printOwnerButton.onPress([]() { tasks.enqueue(&printOwnerSticker); });
+  printStealerButton.onPress([]() { tasks.enqueue(&printStealerSticker); });
 }
 
 void loop() {
   delay(100);
 
-  print14Days.consume([]() {
-    updateTime();
-    client.post("/print/53", createQueryString("EXP", expirationDate(14)));
-  });
-
-  printOwner.consume([]() {
-    client.post("/print/62", createPrintOnlyQueryString());
-  });
-
-  printStealer.consume([]() {
-    client.post("/print/63", createPrintOnlyQueryString());
-  });
+  tasks.execute();
 }
