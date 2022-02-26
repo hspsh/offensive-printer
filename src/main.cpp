@@ -6,69 +6,43 @@
  */
 #include "Arduino.h"
 #include "Button.h"
-#include "ESPPerfectTime.h"
 #include "RestClient.h"
-#include "TZ.h"
-#include <ctime>
+#include "utils.hpp"
 #include <stdio.h>
 
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 13
-#endif
-
-#define BUTTON_EXTERNAL 5
-
-Button printer(BUTTON_EXTERNAL, INPUT);
 RestClient client = RestClient("banana.at.hsp.net.pl", 8000);
-uint8_t times = 0;
 
-void updateTime() { pftime::configTime(TZ_Europe_Warsaw, "0.pl.pool.ntp.org"); }
+Button print14DaysButton(14, INPUT);
+Button printOwnerButton(13, INPUT);
+Button printStealerButton(12, INPUT);
 
-char *expirationDate(unsigned int daysToAdd) {
-  const uint8 SIZE = 11;
-  static char date[SIZE];
 
-  time_t currentTime;
-  time(&currentTime);
-  currentTime += daysToAdd * 24 * 3600;
-
-  struct tm *timeinfo;
-  timeinfo = localtime(&currentTime);
-
-  strftime((char *)&date, SIZE, "%F", timeinfo);
-
-  return (char *)&date;
-}
-
-char *createQueryString(const char *variableName,
-                        const char *escapedStringForQuery) {
-  const uint8 SIZE = 100;
-  static char queryString[SIZE];
-
-  snprintf((char *)queryString, SIZE, "%s=%s&print=Print", variableName,
-           escapedStringForQuery);
-
-  return (char *)&queryString;
-}
+Subject print14Days;
+Subject printOwner;
+Subject printStealer;
 
 void setup() {
-  // initialize LED digital pin as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
-
   Serial.begin(9600);
-
   client.begin("eduram", "zarazcipodam");
 
-  printer.onHold([]() { times++; });
+  print14DaysButton.onPress([]() { print14Days.produce(); });
+  printOwnerButton.onPress([]() { printOwner.produce(); });
+  printStealerButton.onPress([]() { printStealer.produce(); });
 }
 
 void loop() {
   delay(100);
-  if (times > 0) {
+
+  print14Days.consume([]() {
     updateTime();
-    int status =
-        client.post("/print/53", createQueryString("EXP", expirationDate(14)));
-    Serial.println(status);
-    times--;
-  }
+    client.post("/print/53", createQueryString("EXP", expirationDate(14)));
+  });
+
+  printOwner.consume([]() {
+    client.post("/print/62", "");
+  });
+
+  printStealer.consume([]() {
+    client.post("/print/63", "");
+  });
 }
