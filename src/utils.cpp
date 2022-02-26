@@ -3,7 +3,18 @@
 #include "TZ.h"
 #include <ctime>
 
-void updateTime() { pftime::configTime(TZ_Europe_Warsaw, "0.pl.pool.ntp.org"); }
+char *createQueryString(const char *variableName,
+                        const char *escapedStringForQuery) {
+  const uint8 SIZE = 100;
+  static char queryString[SIZE];
+
+  snprintf((char *)queryString, SIZE, "%s=%s&print=Print", variableName,
+           escapedStringForQuery);
+
+  return (char *)&queryString;
+}
+
+const char *createPrintOnlyQueryString() { return "print=Print"; }
 
 char *expirationDate(unsigned int daysToAdd) {
   const uint8 SIZE = 11;
@@ -21,16 +32,7 @@ char *expirationDate(unsigned int daysToAdd) {
   return (char *)&date;
 }
 
-char *createQueryString(const char *variableName,
-                        const char *escapedStringForQuery) {
-  const uint8 SIZE = 100;
-  static char queryString[SIZE];
-
-  snprintf((char *)queryString, SIZE, "%s=%s&print=Print", variableName,
-           escapedStringForQuery);
-
-  return (char *)&queryString;
-}
+void updateTime() { pftime::configTime(TZ_Europe_Warsaw, "0.pl.pool.ntp.org"); }
 
 void Subject::produce() { times++; }
 

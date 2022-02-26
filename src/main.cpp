@@ -39,10 +39,10 @@ void loop() {
   });
 
   printOwner.consume([]() {
-    client.post("/print/62", "");
+    client.post("/print/62", createPrintOnlyQueryString());
   });
 
   printStealer.consume([]() {
-    client.post("/print/63", "");
+    client.post("/print/63", createPrintOnlyQueryString());
   });
 }
