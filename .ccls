@@ -5,6 +5,7 @@ clang
 
 -I/home/psuwala/Projects/ksi/include
 -I/home/psuwala/Projects/ksi/src
+-I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/arduino-timer/src
 -I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/ESPPerfectTime/src
 -I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/Button/src
 -I/home/psuwala/Projects/ksi/.pio/libdeps/nodemcu/ESP8266RestClient
@@ -52,6 +53,8 @@ clang
 -DESP8266
 -DARDUINO_ARCH_ESP8266
 -DARDUINO_ESP8266_NODEMCU
+-DWIFI_SSID=eduram
+-DWIFI_PASS=zarazcipodam
 -DF_CPU=80000000L
 -D__ets__
 -DICACHE_FLASH

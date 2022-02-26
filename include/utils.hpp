@@ -33,7 +33,7 @@ public:
 };
 
 template <int size> class Subject {
-    RingBuffer<size, const std::function<void()> *> toExecute;
+  RingBuffer<size, const std::function<void()> *> toExecute;
 
 public:
   Subject() {}
